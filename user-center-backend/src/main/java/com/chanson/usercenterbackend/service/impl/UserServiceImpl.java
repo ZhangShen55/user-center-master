@@ -1,9 +1,9 @@
 package com.chanson.usercenterbackend.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chanson.usercenterbackend.domain.User;
 import com.chanson.usercenterbackend.mapper.UserMapper;
 import com.chanson.usercenterbackend.service.UserService;
-import generator.domain.User;
 import org.springframework.stereotype.Service;
 
 /**

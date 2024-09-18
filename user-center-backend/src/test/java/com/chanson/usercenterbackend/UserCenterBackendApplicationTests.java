@@ -1,8 +1,8 @@
 package com.chanson.usercenterbackend;
 
 import com.baomidou.mybatisplus.core.toolkit.Assert;
+import com.chanson.usercenterbackend.domain.User;
 import com.chanson.usercenterbackend.mapper.UserMapper;
-import com.chanson.usercenterbackend.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
