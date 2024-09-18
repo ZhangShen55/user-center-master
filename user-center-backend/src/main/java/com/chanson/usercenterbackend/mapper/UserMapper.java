@@ -1,6 +1,6 @@
 package com.chanson.usercenterbackend.mapper;
 
-import com.chanson.usercenterbackend.domain.User;
+import com.chanson.usercenterbackend.module.domain.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
 /**

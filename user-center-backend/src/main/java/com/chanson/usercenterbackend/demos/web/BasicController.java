@@ -16,7 +16,7 @@
 
 package com.chanson.usercenterbackend.demos.web;
 
-import com.chanson.usercenterbackend.domain.User;
+import com.chanson.usercenterbackend.module.domain.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;

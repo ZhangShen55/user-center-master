@@ -1,4 +1,4 @@
-package com.chanson.usercenterbackend.domain;
+package com.chanson.usercenterbackend.module.domain;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -32,6 +32,14 @@ public class User implements Serializable {
      */
     @TableField(value = "userAccount")
     private String userAccount;
+
+
+    /**
+     * 头像
+     */
+    @TableField(value = "avatarUrl")
+    private String avatarUrl;
+
 
     /**
      * 性别1男0女

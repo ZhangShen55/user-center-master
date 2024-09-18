@@ -3,7 +3,7 @@ package com.chanson.usercenterbackend.test;
 
 
 import com.baomidou.mybatisplus.core.toolkit.Assert;
-import com.chanson.usercenterbackend.domain.User;
+import com.chanson.usercenterbackend.module.domain.User;
 import com.chanson.usercenterbackend.mapper.UserMapper;
 import org.junit.Test;
 import org.junit.runner.RunWith;
