@@ -2,6 +2,7 @@ package com.chanson.usercenterbackend.service;
 import java.util.Date;
 
 import com.chanson.usercenterbackend.module.domain.User;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
-
 
 
 @SpringBootTest
@@ -51,5 +51,13 @@ public  class UserServiceTest {
         long userId = userService.userRegister("1111", "12345678", "12345678");
         //Assertions.assertEquals(-1,userId);
         System.out.println(userId);
+    }
+
+    @Test
+    public void doLogin() {
+        String userAccount = "1111";
+        String password = "12345678";
+        User user = userService.doLogin(userAccount, password);
+        System.out.println(user.getId());
     }
 }
