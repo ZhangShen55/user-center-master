@@ -26,9 +26,8 @@ public  class UserServiceTest {
     @Test
     public void testAddUser() {
         User user1 = new User();
-        user1.setId(0L);
         user1.setUsername("zhangshen");
-        user1.setUserAccount("110");
+        user1.setUserAccount("0001");
         user1.setAvatarUrl("https://blog.csdn.net/weixin_44519169?spm=1000.2115.3001.5343");
         user1.setGender(1);
         user1.setUserPassword("12345678");
@@ -53,11 +52,11 @@ public  class UserServiceTest {
         System.out.println(userId);
     }
 
-    @Test
-    public void doLogin() {
-        String userAccount = "1111";
-        String password = "12345678";
-        User user = userService.doLogin(userAccount, password);
-        System.out.println(user.getId());
-    }
+//    @Test
+//    public void doLogin() {
+//        String userAccount = "1111";
+//        String password = "12345678";
+//        User user = userService.doLogin(userAccount, password);
+//        System.out.println(user.getId());
+//    }
 }

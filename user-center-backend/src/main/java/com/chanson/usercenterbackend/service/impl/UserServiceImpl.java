@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,9 +30,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private UserMapper userMapper;
 
     private static final String SLAT = "chanson";
+    private static final String USER_LOGIN_STATE = "user_login_state";
     /**
      * @param userAccount   用户账户
-     * @param password      用户密码
+     * @param userPassword  用户密码
      * @param checkPassword 校验密码
      * @return
      */
@@ -76,7 +79,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User doLogin(String userAccount, String userPassword) {
+    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             return null;
         }
@@ -105,7 +108,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.info("user login failed,userAccount cannot match password!");
             return null;
         }
-        return user;
+
+        // 3.用户脱敏
+        User safteUser = new User();
+        safteUser.setId(user.getId());
+        safteUser.setUsername(user.getUsername());
+        safteUser.setUserAccount(user.getUserAccount());
+        safteUser.setAvatarUrl(user.getAvatarUrl());
+        safteUser.setGender(user.getGender());
+        safteUser.setPhone(user.getPhone());
+        safteUser.setEmail(user.getEmail());
+        safteUser.setUserStatus(user.getUserStatus());
+        safteUser.setCreateTime(user.getCreateTime());
+        safteUser.setUpdateTime(user.getUpdateTime());
+        // 4.记录用户的登录态
+        request.getSession().setAttribute(USER_LOGIN_STATE,safteUser);
+
+        return safteUser;
     }
 }
 

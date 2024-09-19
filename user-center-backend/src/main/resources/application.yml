@@ -3,9 +3,15 @@ spring:
     name: user-center
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/chanson
+#    url: jdbc:mysql://localhost:3306/chanson mac
+    url: jdbc:mysql://localhost:3306/zhangshen  # windows
     username: root
     password: root
 server:
   port: 8081
-
+mybatis-plus:
+  global-config:
+    db-config:
+      logic-delete-field: isDelete # 全局逻辑删除字段名
+      logic-delete-value: 1 # 逻辑已删除值
+      logic-not-delete-value: 0 # 逻辑未删除值

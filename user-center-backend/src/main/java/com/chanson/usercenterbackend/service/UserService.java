@@ -3,6 +3,8 @@ package com.chanson.usercenterbackend.service;
 import com.chanson.usercenterbackend.module.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
 * @author sencheung
 * @description 针对表【user】的数据库操作Service
@@ -25,7 +27,8 @@ public interface UserService extends IService<User> {
      * 用户登录
      * @param userAccount 用户账户
      * @param userPassword 用户密码
+     * @param request 用户密码
      * @return 登录用户
      */
-     User doLogin(String userAccount , String userPassword);
+     User userLogin(String userAccount , String userPassword,HttpServletRequest request);
 }
