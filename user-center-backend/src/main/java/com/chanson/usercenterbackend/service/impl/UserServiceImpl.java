@@ -12,9 +12,10 @@ import org.springframework.util.DigestUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.chanson.usercenterbackend.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * @author sencheung
@@ -30,7 +31,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private UserMapper userMapper;
 
     private static final String SLAT = "chanson";
-    private static final String USER_LOGIN_STATE = "user_login_state";
+
     /**
      * @param userAccount   用户账户
      * @param userPassword  用户密码
@@ -110,20 +111,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         // 3.用户脱敏
-        User safteUser = new User();
-        safteUser.setId(user.getId());
-        safteUser.setUsername(user.getUsername());
-        safteUser.setUserAccount(user.getUserAccount());
-        safteUser.setAvatarUrl(user.getAvatarUrl());
-        safteUser.setGender(user.getGender());
-        safteUser.setPhone(user.getPhone());
-        safteUser.setEmail(user.getEmail());
-        safteUser.setUserStatus(user.getUserStatus());
-        safteUser.setCreateTime(user.getCreateTime());
-        safteUser.setUpdateTime(user.getUpdateTime());
+        User safteUser = getSafteUser(user);
         // 4.记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE,safteUser);
 
+        return safteUser;
+    }
+
+
+    @Override
+    public User getSafteUser(User originUser){
+        User safteUser = new User();
+        safteUser.setId(originUser.getId());
+        safteUser.setUsername(originUser.getUsername());
+        safteUser.setUserAccount(originUser.getUserAccount());
+        safteUser.setAvatarUrl(originUser.getAvatarUrl());
+        safteUser.setGender(originUser.getGender());
+        safteUser.setPhone(originUser.getPhone());
+        safteUser.setEmail(originUser.getEmail());
+        safteUser.setUserStatus(originUser.getUserStatus());
+        safteUser.setUserRole(originUser.getUserRole());
+        safteUser.setCreateTime(originUser.getCreateTime());
+        safteUser.setUpdateTime(originUser.getUpdateTime());
         return safteUser;
     }
 }

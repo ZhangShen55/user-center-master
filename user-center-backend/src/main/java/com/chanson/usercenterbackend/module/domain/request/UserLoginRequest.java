@@ -3,7 +3,7 @@ package com.chanson.usercenterbackend.module.domain.request;
 
 import lombok.Data;
 
-
+import java.io.Serializable;
 
 
 /**
@@ -11,7 +11,12 @@ import lombok.Data;
  * @author ZhangShen
  */
 @Data
-public class UserLoginRequest {
+public class UserLoginRequest implements Serializable {
+
+
+    private static final long serialVersionUID = 9165229045923385718L;
     private String userAccount;
     private String userPassword;
+
+
 }
