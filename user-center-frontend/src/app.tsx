@@ -10,6 +10,18 @@ import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
 
+
+import { RequestConfig } from 'umi';
+
+// export const request: RequestConfig = {
+//   timeout: 1000,
+//   errorConfig: {},
+//   middlewares: [],
+//   requestInterceptors: [],
+//   responseInterceptors: [],
+//   errorHandler,
+// };
+
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
  * */
