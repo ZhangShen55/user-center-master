@@ -3,16 +3,16 @@ spring:
     name: user-center
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/chanson  #mac
-   # url: jdbc:mysql://localhost:3306/zhangshen  # windows
+#    url: jdbc:mysql://localhost:3306/chanson  #mac
+    url: jdbc:mysql://localhost:3306/zhangshen  # windows
     username: root
     password: root
   session:
     timeout: 86400 # session过期时间 1天
-#  servlet:
-#    context-path: /api # 项目访问路径
 server:
-  port: 8081
+  port: 8080
+  servlet:
+    context-path: /api
 mybatis-plus:
   global-config:
     db-config:

@@ -13,14 +13,6 @@ const loginPath = '/user/login';
 
 import { RequestConfig } from 'umi';
 
-// export const request: RequestConfig = {
-//   timeout: 1000,
-//   errorConfig: {},
-//   middlewares: [],
-//   requestInterceptors: [],
-//   responseInterceptors: [],
-//   errorHandler,
-// };
 
 /**
  * @see  https://umijs.org/zh-CN/plugins/plugin-initial-state
