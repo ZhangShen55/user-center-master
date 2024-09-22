@@ -59,6 +59,26 @@ public class UserController {
         return user;
     }
 
+    /**
+     * 获取当前user（获取当前用户态）
+     * @param httpServletRequest request
+     * @return 当前用户
+     */
+    @GetMapping("/current")
+    public User getCurrentUser(HttpServletRequest httpServletRequest){
+        //获取到当前User
+        Object userObj = httpServletRequest.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User)userObj;
+        //这里不能直接返回 
+        //直接返回只是之前存入的用户状态 如果用户付费更新了其他数据呢
+        //所以要再查一遍
+        User user = userService.getById(currentUser.getId());
+        // todo 查询用户状态（是否是封号状态）
+        return userService.getSafteUser(user);
+        
+
+    }
+
     @GetMapping("/search")
     public List<User> searchUser(String username,HttpServletRequest httpServletRequest){
         //鉴权 仅管理员可查询

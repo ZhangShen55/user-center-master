@@ -9,6 +9,10 @@ import defaultSettings from '../config/defaultSettings';
 import { errorConfig } from './requestErrorConfig';
 const isDev = process.env.NODE_ENV === 'development';
 const loginPath = '/user/login';
+/**
+ * 无需用户态的登录页面
+ */
+const NO_NEED_LOGIN_WHITE_LIST = ['user/register',loginPath]
 
 
 import { RequestConfig } from 'umi';
@@ -25,27 +29,26 @@ export async function getInitialState(): Promise<{
 }> {
   const fetchUserInfo = async () => {
     try {
-      const msg = await queryCurrentUser({
+      const user = await queryCurrentUser({
         skipErrorHandler: true,
       });
-      return msg.data;
+      return user;
     } catch (error) {
-      history.push(loginPath);
+      history.push(loginPath);  //自动跳转到登录页面 先注释掉
     }
     return undefined;
   };
-  // 如果不是登录页面，执行
-  const { location } = history;
-  if (location.pathname !== loginPath) {
-    const currentUser = await fetchUserInfo();
+  // 如果是无需登录的页面，不执行
+  if (NO_NEED_LOGIN_WHITE_LIST.includes(history.location.pathname)) {
     return {
       fetchUserInfo,
-      currentUser,
       settings: defaultSettings as Partial<LayoutSettings>,
     };
   }
+  const currentUser = await fetchUserInfo();
   return {
     fetchUserInfo,
+    currentUser,
     settings: defaultSettings as Partial<LayoutSettings>,
   };
 }
@@ -55,22 +58,30 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
   return {
     actionsRender: () => [<Question key="doc" />],
     avatarProps: {
-      src: initialState?.currentUser?.avatar,
+      src: initialState?.currentUser?.avatarUrl,
       title: <AvatarName />,
       render: (_, avatarChildren) => {
         return <AvatarDropdown>{avatarChildren}</AvatarDropdown>;
       },
     },
     waterMarkProps: {
-      content: initialState?.currentUser?.name,
+      content: initialState?.currentUser?.username,
     },
     footerRender: () => <Footer />,
     onPageChange: () => {
       const { location } = history;
-      // 如果没有登录，重定向到 login
-      if (!initialState?.currentUser && location.pathname !== loginPath) {
-        history.push(loginPath);
+
+      if(NO_NEED_LOGIN_WHITE_LIST.includes(location.pathname)){
+        //白名单中包含的地址 直接返回 不重定向到登录页
+        return;
       }
+      // 如果没有登录，重定向到 login
+      if (!initialState?.currentUser ) {
+          history.push(loginPath);
+        }
+      // if (!initialState?.currentUser && location.pathname !== loginPath) {
+      //   history.push(loginPath);
+      // }
     },
     bgLayoutImgList: [
       {
@@ -136,4 +147,5 @@ export const layout: RunTimeLayoutConfig = ({ initialState, setInitialState }) =
  */
 export const request = {
   ...errorConfig,
+  // timeout:100000,
 };

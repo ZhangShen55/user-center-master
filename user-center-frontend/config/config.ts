@@ -55,7 +55,7 @@ export default defineConfig({
   // proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
   proxy: {
     '/api': {
-      'target': 'http://localhost:8081/',
+      'target': 'http://localhost:8080/',
       'changeOrigin': true,
       'pathRewrite': { '^/api' : '/api' },
     }

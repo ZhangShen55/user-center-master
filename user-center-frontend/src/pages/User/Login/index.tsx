@@ -15,8 +15,8 @@ import {
   ProFormCheckbox,
   ProFormText,
 } from '@ant-design/pro-components';
-import { Helmet, history, useModel } from '@umijs/max';
-import { Alert, message, Tabs } from 'antd';
+import {Helmet, history, Link, useModel} from '@umijs/max';
+import {Alert, Divider, message, Tabs} from 'antd';
 import { createStyles } from 'antd-style';
 import React, { useState } from 'react';
 import { flushSync } from 'react-dom';
@@ -103,11 +103,11 @@ const Login: React.FC = () => {
   const handleSubmit = async (values: API.LoginParams) => {
     try {
       // 登录
-      const user = await login({
+      const msg = await login({
         ...values,
         type,
       });
-      if (user) {
+      if (msg.status === 'ok') {
         const defaultLoginSuccessMessage = '登录成功！';
         message.success(defaultLoginSuccessMessage);
         await fetchUserInfo();
@@ -115,9 +115,9 @@ const Login: React.FC = () => {
         history.push(urlParams.get('redirect') || '/');
         return;
       }
-      console.log(user);
+      console.log(msg);
       // 如果失败去设置用户错误信息
-      setUserLoginState(user);
+      setUserLoginState(msg);
     } catch (error) {
       const defaultLoginFailureMessage = '登录失败，请重试！';
       console.log(error);
@@ -146,7 +146,7 @@ const Login: React.FC = () => {
           }}
           logo={<img alt="logo" src="/logo.svg" />}
           title="Produced by ZhangShen55"
-          subTitle={'ZhangShen55 GOODGOODLEARNING & DAYDAYUPING'}
+          subTitle={'ZhangShen55 GOODGOODLEARN & DAYDAYUP'}
           initialValues={{
             autoLogin: true,
           }}
@@ -198,11 +198,6 @@ const Login: React.FC = () => {
                     required: true,
                     message: '密码是必填项！',
                   },
-                  {
-                    min: 8,
-                    type: 'string',
-                    message: '密码长度不小于8！',
-                  }
                 ]}
               />
             </>
@@ -217,6 +212,9 @@ const Login: React.FC = () => {
             <ProFormCheckbox noStyle name="autoLogin">
               自动登录
             </ProFormCheckbox>
+            <Divider type="vertical" />
+            <Link to={"/user/register"}>用户注册</Link>
+            <Divider type="vertical" />
             <a
               style={{
                 float: 'right',
@@ -224,7 +222,7 @@ const Login: React.FC = () => {
             href={'https://github.com/zhangshen55'}
               target="_blank"
             >
-              忘记密码请重新去注册 好不好？
+              忘记密码请重新去注册
             </a>
           </div>
         </LoginForm>
