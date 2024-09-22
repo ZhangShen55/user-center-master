@@ -52,9 +52,10 @@ export default defineConfig({
    * @doc 代理配置 https://umijs.org/docs/api/config#proxy
    */
   // proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
+  // proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
   proxy: {
-    '/api/': {
-      'target': 'http://localhost:8080/',
+    '/api': {
+      'target': 'http://localhost:8081/',
       'changeOrigin': true,
       'pathRewrite': { '^/api' : '/api' },
     }
