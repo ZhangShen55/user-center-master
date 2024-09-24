@@ -12,9 +12,9 @@ export async function currentUser(options?: { [key: string]: any }) {
   });
 }
 
-/** 退出登录接口 POST /api/login/outLogin */
+/** 退出登录接口 POST /api/user/logout */
 export async function outLogin(options?: { [key: string]: any }) {
-  return request<Record<string, any>>('/api/login/outLogin', {
+  return request<Record<string, any>>('/api/user/logout', {
     method: 'POST',
     ...(options || {}),
   });
@@ -50,6 +50,15 @@ export async function getNotices(options?: { [key: string]: any }) {
     ...(options || {}),
   });
 }
+/** 获取搜索用户 GET /api/user/search */
+export async function searchUser(options?: { [key: string]: any }) {
+  return request<API.CurrentUser[]>('/api/user/search', {
+    method: 'GET',
+    ...(options || {}),
+  });
+}
+
+
 
 /** 获取规则列表 GET /api/rule */
 export async function rule(
