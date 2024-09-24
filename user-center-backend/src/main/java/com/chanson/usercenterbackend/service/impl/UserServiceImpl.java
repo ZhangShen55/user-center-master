@@ -39,12 +39,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword, String plantCode) {
 
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword)) {
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, plantCode)) {
             return -1;
         }
         if (userAccount.length() < 4 || userPassword.length() < 8) {
+            return -1;
+        }
+        if(plantCode.length() > 5){
             return -1;
         }
         //账户不能包含特殊字符  在此之前进行账户名重复校验 可能会造成资源浪费
@@ -63,6 +66,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (count > 0) {
             return -1;
         }
+
+        //星球编号不能重复
+        userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.eq("placnCode", plantCode);
+        count = this.count(userQueryWrapper);
+        if (count > 0) {
+            return -1;
+        }
         // 2.密码加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SLAT + userPassword).getBytes());
 
@@ -70,8 +81,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+        user.setPlantCode(plantCode);
         boolean saveResult = this.save(user);
-
         //防止数据库未能生成Id -> null 拆箱失败
         if(!saveResult){
             return -1;
@@ -80,7 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
+    public User userLogin(String userAccount, String userPassword,HttpServletRequest request) {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
             return null;
         }
@@ -109,7 +120,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             log.info("user login failed,userAccount cannot match password!");
             return null;
         }
-
         // 3.用户脱敏
         User safteUser = getSafteUser(user);
         // 4.记录用户的登录态
@@ -128,6 +138,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safteUser.setId(originUser.getId());
         safteUser.setUsername(originUser.getUsername());
         safteUser.setUserAccount(originUser.getUserAccount());
+        safteUser.setPlantCode(originUser.getPlantCode());
         safteUser.setAvatarUrl(originUser.getAvatarUrl());
         safteUser.setGender(originUser.getGender());
         safteUser.setPhone(originUser.getPhone());
@@ -137,6 +148,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safteUser.setCreateTime(originUser.getCreateTime());
         safteUser.setUpdateTime(originUser.getUpdateTime());
         return safteUser;
+    }
+
+    /**
+     * 移除用户登录态
+     *
+     * @param request
+     * @return
+     */
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        request.getSession().removeAttribute(USER_LOGIN_STATE);
+        return 1;
     }
 }
 

@@ -11,6 +11,7 @@
             <result property="avatarUrl" column="avatarUrl" jdbcType="VARCHAR"/>
             <result property="gender" column="gender" jdbcType="TINYINT"/>
             <result property="userPassword" column="userPassword" jdbcType="VARCHAR"/>
+            <result property="plantCode" column="plantCode" jdbcType="VARCHAR"/>
             <result property="phone" column="phone" jdbcType="VARCHAR"/>
             <result property="email" column="email" jdbcType="VARCHAR"/>
             <result property="userStatus" column="userStatus" jdbcType="INTEGER"/>
@@ -24,6 +25,6 @@
         id,username,userAccount,avatarUrl,
         gender,userPassword,phone,
         email,userStatus,createTime,
-        updateTime,isDelete,userRole
+        updateTime,isDelete,userRole,plantCode
     </sql>
 </mapper>

@@ -52,6 +52,13 @@ public class User implements Serializable {
     private String userPassword;
 
     /**
+     * 星球编号
+     */
+    @TableField(value = "plantCode")
+    private String plantCode;
+
+
+    /**
      * 电话
      */
     @TableField(value = "phone")

@@ -33,12 +33,13 @@ public class UserController {
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
+        String plantCode = userRegisterRequest.getPlantCode();
         //Service层已经进行了判空，为什么在controller还要进行判空呢？
         //Controller只倾向于参数本身的校验，不设计逻辑本身
-        if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword)){
+        if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword,plantCode)){
             return null;
         }
-        long userId = userService.userRegister(userAccount, userPassword, checkPassword);
+        long userId = userService.userRegister(userAccount, userPassword, checkPassword, plantCode);
         return userId;
     }
 
@@ -58,6 +59,21 @@ public class UserController {
         User user = userService.userLogin(userAccount,userPassword,request);
         return user;
     }
+
+
+    /**
+     * 用户注销登录
+     * @param request
+     * @return 1注销成功
+     */
+    @PostMapping("/logout")
+    public Integer userLogout(HttpServletRequest request){
+        if(request == null){
+            return null;
+        }
+        return userService.userLogout(request);
+    }
+
 
     /**
      * 获取当前user（获取当前用户态）
