@@ -1,7 +1,11 @@
 package com.chanson.usercenterbackend.service.impl;
 
+import ch.qos.logback.core.pattern.util.RegularEscapeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.chanson.usercenterbackend.common.BaseResponse;
+import com.chanson.usercenterbackend.common.ErrorCode;
+import com.chanson.usercenterbackend.common.ResultUtils;
 import com.chanson.usercenterbackend.module.domain.User;
 import com.chanson.usercenterbackend.service.UserService;
 import com.chanson.usercenterbackend.mapper.UserMapper;
@@ -39,32 +43,32 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      * @return
      */
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword, String plantCode) {
+    public BaseResponse<Long> userRegister(String userAccount, String userPassword, String checkPassword, String plantCode) {
 
         if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, plantCode)) {
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         if (userAccount.length() < 4 || userPassword.length() < 8) {
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         if(plantCode.length() > 5){
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         //账户不能包含特殊字符  在此之前进行账户名重复校验 可能会造成资源浪费
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]{6,8}$";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (matcher.find()) {
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         if (!userPassword.equals(checkPassword)) {
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         //账户名不能重复
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.eq("userAccount", userAccount);
         long count = this.count(userQueryWrapper);
         if (count > 0) {
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
 
         //星球编号不能重复
@@ -72,7 +76,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         userQueryWrapper.eq("placnCode", plantCode);
         count = this.count(userQueryWrapper);
         if (count > 0) {
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         // 2.密码加密
         String encryptPassword = DigestUtils.md5DigestAsHex((SLAT + userPassword).getBytes());
@@ -85,28 +89,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         boolean saveResult = this.save(user);
         //防止数据库未能生成Id -> null 拆箱失败
         if(!saveResult){
-            return -1;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
-        return user.getId();
+        return ResultUtils.success(user.getId());
     }
 
     @Override
-    public User userLogin(String userAccount, String userPassword,HttpServletRequest request) {
+    public BaseResponse<User> userLogin(String userAccount, String userPassword,HttpServletRequest request) {
         if (StringUtils.isAnyBlank(userAccount, userPassword)) {
-            return null;
+            return ResultUtils.error(ErrorCode.NULL_ERROR);
         }
         if (userAccount.length() < 4) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         if (userPassword.length() < 8) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
 
         //账户不能包含特殊字符  在此之前进行账户名重复校验 可能会造成资源浪费
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\[\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]{6,8}$";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (matcher.find()) {
-            return null;
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
 
         // 2.密码加密
@@ -118,14 +122,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if(user==null){
             //登录失败 打印日志
             log.info("user login failed,userAccount cannot match password!");
-            return null;
+            return ResultUtils.error(ErrorCode.NO_LOGIN);
         }
         // 3.用户脱敏
         User safteUser = getSafteUser(user);
         // 4.记录用户的登录态
         request.getSession().setAttribute(USER_LOGIN_STATE,safteUser);
 
-        return safteUser;
+        return ResultUtils.success(safteUser);
     }
 
 
@@ -159,7 +163,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     @Override
     public int userLogout(HttpServletRequest request) {
         request.getSession().removeAttribute(USER_LOGIN_STATE);
-        return 1;
+        return ErrorCode.SUCCESS.getCode();
     }
 }
 

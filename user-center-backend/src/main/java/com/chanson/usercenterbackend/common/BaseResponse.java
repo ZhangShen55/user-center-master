@@ -30,7 +30,7 @@ public class BaseResponse<T> implements Serializable {
     }
 
     public BaseResponse(int code, T data, String message) {
-        this(code, data, "", "");
+        this(code, data, message, "");
     }
 
     public BaseResponse(ErrorCode errorCode) {

@@ -3,6 +3,7 @@ package com.chanson.usercenterbackend.Controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chanson.usercenterbackend.common.BaseResponse;
+import com.chanson.usercenterbackend.common.ErrorCode;
 import com.chanson.usercenterbackend.common.ResultUtils;
 import com.chanson.usercenterbackend.constant.UserConstant;
 import com.chanson.usercenterbackend.module.domain.User;
@@ -30,7 +31,7 @@ public class UserController {
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
         if(userRegisterRequest == null){
-            return null;
+            return ResultUtils.error(ErrorCode.NULL_ERROR);
         }
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
@@ -39,7 +40,7 @@ public class UserController {
         //Service层已经进行了判空，为什么在controller还要进行判空呢？
         //Controller只倾向于参数本身的校验，不设计逻辑本身
         if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword,plantCode)){
-            return null;
+            return ResultUtils.error(ErrorCode.NULL_ERROR);
         }
         long userId = userService.userRegister(userAccount, userPassword, checkPassword, plantCode);
         return ResultUtils.success(userId);
@@ -49,14 +50,14 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request){
         if(userLoginRequest == null){
-            return null;
+            return ResultUtils.error(ErrorCode.NULL_ERROR);
         }
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
         //Service层已经进行了判空，为什么在controller还要进行判空呢？
         //Controller只倾向于参数本身的校验，不设计逻辑本身
         if(StringUtils.isAnyBlank(userAccount,userPassword)){
-            return null;
+            return ResultUtils.error(ErrorCode.NULL_ERROR);
         }
         User user = userService.userLogin(userAccount,userPassword,request);
         return ResultUtils.success(user);
@@ -71,10 +72,11 @@ public class UserController {
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request){
         if(request == null){
-            return ResultUtils.error(null);
+            return ResultUtils.error(ErrorCode.NULL_ERROR);
         }
 
         int result = userService.userLogout(request);
+
         return ResultUtils.success(result);
     }
 
@@ -103,7 +105,7 @@ public class UserController {
         //鉴权 仅管理员可查询
         if(!isAdmin(httpServletRequest)){
             //鉴权不通过 返回空列表
-            return ResultUtils.error(new ArrayList<>());
+            return ResultUtils.error(ErrorCode.NO_AUTH);
         }
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         if(StringUtils.isNotBlank(username)){
@@ -120,10 +122,10 @@ public class UserController {
     public  BaseResponse<Boolean> deleteUser(@RequestBody long id,HttpServletRequest httpServletRequest){
         // 鉴权仅管理员可查询
         if(!isAdmin(httpServletRequest)){
-            return ResultUtils.error(false);
+            return ResultUtils.error(ErrorCode.NO_AUTH);
         }
         if(id <= 0){
-            return ResultUtils.error(false);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         boolean result = userService.removeById(id);
         return ResultUtils.success(result);

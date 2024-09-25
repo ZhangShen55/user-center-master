@@ -11,7 +11,7 @@ public class ResultUtils {
         return new BaseResponse<T>(ErrorCode.SUCCESS.getCode(),data,ErrorCode.SUCCESS.getMessage(),ErrorCode.SUCCESS.getDescription());
     }
 
-    public static <T> BaseResponse<T> error(T data){
-        return new BaseResponse<T>(ErrorCode.SUCCESS.getCode(),null,ErrorCode.SUCCESS.getMessage(),ErrorCode.SUCCESS.getDescription());
+    public static <T> BaseResponse<T> error(ErrorCode errorCode){
+        return new BaseResponse<T>(errorCode);
     }
 }

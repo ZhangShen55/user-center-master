@@ -1,5 +1,6 @@
 package com.chanson.usercenterbackend.service;
 
+import com.chanson.usercenterbackend.common.BaseResponse;
 import com.chanson.usercenterbackend.module.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
@@ -20,7 +21,7 @@ public interface UserService extends IService<User> {
      * @param checkPassword 校验密码
      * @return
      */
-    long userRegister(String userAccount ,String userPassword,String checkPassword,String plantCode);
+    BaseResponse<Long> userRegister(String userAccount , String userPassword, String checkPassword, String plantCode);
 
 
     /**
@@ -30,7 +31,7 @@ public interface UserService extends IService<User> {
      * @param request 用户密码
      * @return 登录用户
      */
-     User userLogin(String userAccount,String userPassword,HttpServletRequest request);
+     BaseResponse<User> userLogin(String userAccount,String userPassword,HttpServletRequest request);
 
     /**
      * 用户脱敏
