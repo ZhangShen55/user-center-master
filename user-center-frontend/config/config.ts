@@ -55,7 +55,10 @@ export default defineConfig({
   // proxy: proxy[REACT_APP_ENV as keyof typeof proxy],
   proxy: {
     '/api': {
-      'target': 'http://localhost:8080/',
+      // window
+      // 'target': 'http://localhost:8080/',
+      // mac 端口是8081  因为8080被占用
+      'target': 'http://localhost:5050/',
       'changeOrigin': true,
       'pathRewrite': { '^/api' : '/api' },
     }

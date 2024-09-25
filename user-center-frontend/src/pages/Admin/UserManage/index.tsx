@@ -52,7 +52,15 @@ const columns: ProColumns<API.CurrentUser>[] = [
   {
     title: '性别',
     dataIndex: 'gender',
-    copyable: true,
+    valueEnum: {
+      0: {text: '女',
+        status: 'default'
+      },
+      1: {
+        text: '男',
+        status: 'default',
+      },
+    }
   },
   {
     title: '电话',
@@ -164,7 +172,7 @@ const columns: ProColumns<API.CurrentUser>[] = [
         编辑
       </a>,
       <a href={record.url} target="_blank" rel="noopener noreferrer" key="view">
-        查看
+        查看(todo)
       </a>,
       <TableDropdown
         key="actionGroup"
