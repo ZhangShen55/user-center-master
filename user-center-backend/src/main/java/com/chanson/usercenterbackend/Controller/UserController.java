@@ -2,6 +2,8 @@ package com.chanson.usercenterbackend.Controller;
 
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.chanson.usercenterbackend.common.BaseResponse;
+import com.chanson.usercenterbackend.common.ResultUtils;
 import com.chanson.usercenterbackend.constant.UserConstant;
 import com.chanson.usercenterbackend.module.domain.User;
 import com.chanson.usercenterbackend.module.domain.request.UserLoginRequest;
@@ -26,7 +28,7 @@ public class UserController {
     private UserService userService;
 
     @PostMapping("/register")
-    public Long userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
+    public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
         if(userRegisterRequest == null){
             return null;
         }
@@ -40,12 +42,12 @@ public class UserController {
             return null;
         }
         long userId = userService.userRegister(userAccount, userPassword, checkPassword, plantCode);
-        return userId;
+        return ResultUtils.success(userId);
     }
 
 
     @PostMapping("/login")
-    public User userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request){
+    public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request){
         if(userLoginRequest == null){
             return null;
         }
@@ -57,7 +59,7 @@ public class UserController {
             return null;
         }
         User user = userService.userLogin(userAccount,userPassword,request);
-        return user;
+        return ResultUtils.success(user);
     }
 
 
@@ -67,11 +69,13 @@ public class UserController {
      * @return 1注销成功
      */
     @PostMapping("/logout")
-    public Integer userLogout(HttpServletRequest request){
+    public BaseResponse<Integer> userLogout(HttpServletRequest request){
         if(request == null){
-            return null;
+            return ResultUtils.error(null);
         }
-        return userService.userLogout(request);
+
+        int result = userService.userLogout(request);
+        return ResultUtils.success(result);
     }
 
 
@@ -81,7 +85,7 @@ public class UserController {
      * @return 当前用户
      */
     @GetMapping("/current")
-    public User getCurrentUser(HttpServletRequest httpServletRequest){
+    public BaseResponse<User> getCurrentUser(HttpServletRequest httpServletRequest){
         //获取到当前User
         Object userObj = httpServletRequest.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User)userObj;
@@ -90,17 +94,16 @@ public class UserController {
         //所以要再查一遍
         User user = userService.getById(currentUser.getId());
         // todo 查询用户状态（是否是封号状态）
-        return userService.getSafteUser(user);
-        
-
+        User safteUser = userService.getSafteUser(user);
+        return ResultUtils.success(safteUser);
     }
 
     @GetMapping("/search")
-    public List<User> searchUser(String username,HttpServletRequest httpServletRequest){
+    public BaseResponse<List<User>> searchUser(String username,HttpServletRequest httpServletRequest){
         //鉴权 仅管理员可查询
         if(!isAdmin(httpServletRequest)){
             //鉴权不通过 返回空列表
-            return new ArrayList<>();
+            return ResultUtils.error(new ArrayList<>());
         }
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         if(StringUtils.isNotBlank(username)){
@@ -108,20 +111,22 @@ public class UserController {
             userQueryWrapper.like("username",username);
         }
         // 返回结果 脱敏用户列表
-        return userService.list(userQueryWrapper).stream().map(user -> userService.getSafteUser(user)
+        List<User> userList = userService.list(userQueryWrapper).stream().map(user -> userService.getSafteUser(user)
         ).collect(Collectors.toList());
+        return ResultUtils.success(userList);
     }
 
     @PostMapping("/delete")
-    public  boolean deleteUser(@RequestBody long id,HttpServletRequest httpServletRequest){
+    public  BaseResponse<Boolean> deleteUser(@RequestBody long id,HttpServletRequest httpServletRequest){
         // 鉴权仅管理员可查询
         if(!isAdmin(httpServletRequest)){
-            return false;
+            return ResultUtils.error(false);
         }
         if(id <= 0){
-            return false;
+            return ResultUtils.error(false);
         }
-        return  userService.removeById(id);
+        boolean result = userService.removeById(id);
+        return ResultUtils.success(result);
     }
 
 
