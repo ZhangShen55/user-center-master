@@ -1,5 +1,7 @@
 package com.chanson.usercenterbackend.common;
 
+import lombok.Data;
+
 import java.io.Serializable;
 
 
@@ -9,21 +11,35 @@ import java.io.Serializable;
  * @param <T>
  * @author zhangshen
  */
+@Data
 public class BaseResponse<T> implements Serializable {
 
-    private static final long serialVersionUID = 5911240676465101596L;
+    /**
+     * 状态码
+     */
     private int code;
-    private T Data;
+
+    /**
+     * 数据
+     */
+    private T data;
+
+    /**
+     * 消息
+     */
     private String message;
+
+    /**
+     * 描述
+     */
     private String description;
 
     public BaseResponse(int code, T data, String message, String description) {
         this.code = code;
-        Data = data;
+        this.data = data;
         this.message = message;
         this.description = description;
     }
-
 
     public BaseResponse(int code, T data) {
         this(code, data, "", "");
@@ -33,13 +49,8 @@ public class BaseResponse<T> implements Serializable {
         this(code, data, message, "");
     }
 
+
     public BaseResponse(ErrorCode errorCode) {
         this(errorCode.getCode(), null, errorCode.getMessage(), errorCode.getDescription());
     }
-
-    public BaseResponse(ErrorCode errorCode, T data) {
-        this(errorCode.getCode(), data, errorCode.getMessage(), errorCode.getDescription());
-    }
-
-
 }

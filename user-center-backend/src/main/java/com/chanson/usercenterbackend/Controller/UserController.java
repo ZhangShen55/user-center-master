@@ -6,6 +6,7 @@ import com.chanson.usercenterbackend.common.BaseResponse;
 import com.chanson.usercenterbackend.common.ErrorCode;
 import com.chanson.usercenterbackend.common.ResultUtils;
 import com.chanson.usercenterbackend.constant.UserConstant;
+import com.chanson.usercenterbackend.exception.BaseException;
 import com.chanson.usercenterbackend.module.domain.User;
 import com.chanson.usercenterbackend.module.domain.request.UserLoginRequest;
 import com.chanson.usercenterbackend.module.domain.request.UserRegisterRequest;
@@ -31,7 +32,7 @@ public class UserController {
     @PostMapping("/register")
     public BaseResponse<Long> userRegister(@RequestBody UserRegisterRequest userRegisterRequest){
         if(userRegisterRequest == null){
-            return ResultUtils.error(ErrorCode.NULL_ERROR);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
@@ -40,7 +41,7 @@ public class UserController {
         //Service层已经进行了判空，为什么在controller还要进行判空呢？
         //Controller只倾向于参数本身的校验，不设计逻辑本身
         if(StringUtils.isAnyBlank(userAccount,userPassword,checkPassword,plantCode)){
-            return ResultUtils.error(ErrorCode.NULL_ERROR);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR,"注册有参数为空");
         }
         long userId = userService.userRegister(userAccount, userPassword, checkPassword, plantCode);
         return ResultUtils.success(userId);
@@ -50,16 +51,16 @@ public class UserController {
     @PostMapping("/login")
     public BaseResponse<User> userLogin(@RequestBody UserLoginRequest userLoginRequest, HttpServletRequest request){
         if(userLoginRequest == null){
-            return ResultUtils.error(ErrorCode.NULL_ERROR);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
         }
         String userAccount = userLoginRequest.getUserAccount();
         String userPassword = userLoginRequest.getUserPassword();
         //Service层已经进行了判空，为什么在controller还要进行判空呢？
         //Controller只倾向于参数本身的校验，不设计逻辑本身
         if(StringUtils.isAnyBlank(userAccount,userPassword)){
-            return ResultUtils.error(ErrorCode.NULL_ERROR);
+            return ResultUtils.error(ErrorCode.PARAMS_ERROR,"账号或密码为空");
         }
-        User user = userService.userLogin(userAccount,userPassword,request);
+        User user = userService.userLogin(userAccount, userPassword, request);
         return ResultUtils.success(user);
     }
 
@@ -67,16 +68,14 @@ public class UserController {
     /**
      * 用户注销登录
      * @param request
-     * @return 1注销成功
+     * @return 注销成功
      */
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request){
         if(request == null){
-            return ResultUtils.error(ErrorCode.NULL_ERROR);
+            throw new BaseException(ErrorCode.PARAMS_ERROR);
         }
-
         int result = userService.userLogout(request);
-
         return ResultUtils.success(result);
     }
 
@@ -104,8 +103,8 @@ public class UserController {
     public BaseResponse<List<User>> searchUser(String username,HttpServletRequest httpServletRequest){
         //鉴权 仅管理员可查询
         if(!isAdmin(httpServletRequest)){
-            //鉴权不通过 返回空列表
-            return ResultUtils.error(ErrorCode.NO_AUTH);
+            // 鉴权不通过抛出异常
+            throw new BaseException(ErrorCode.NO_AUTH,"用户无权限");
         }
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         if(StringUtils.isNotBlank(username)){
@@ -122,10 +121,10 @@ public class UserController {
     public  BaseResponse<Boolean> deleteUser(@RequestBody long id,HttpServletRequest httpServletRequest){
         // 鉴权仅管理员可查询
         if(!isAdmin(httpServletRequest)){
-            return ResultUtils.error(ErrorCode.NO_AUTH);
+            throw new BaseException(ErrorCode.NO_AUTH,"用户无权限");
         }
         if(id <= 0){
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR);
+            throw new BaseException(ErrorCode.PARAMS_ERROR,"用户不存在");
         }
         boolean result = userService.removeById(id);
         return ResultUtils.success(result);

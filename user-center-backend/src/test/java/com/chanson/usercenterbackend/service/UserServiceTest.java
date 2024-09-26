@@ -1,6 +1,7 @@
 package com.chanson.usercenterbackend.service;
 import java.util.Date;
 
+import com.chanson.usercenterbackend.common.BaseResponse;
 import com.chanson.usercenterbackend.module.domain.User;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -47,7 +48,7 @@ public  class UserServiceTest {
 
     @Test
     public void userRegister() {
-        long userId = userService.userRegister("1111", "12345678", "12345678","123");
+        long userId = userService.userRegister("1111", "12345678", "12345678", "123");
         //Assertions.assertEquals(-1,userId);
         System.out.println(userId);
     }

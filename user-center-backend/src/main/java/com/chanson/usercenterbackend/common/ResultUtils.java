@@ -2,16 +2,62 @@ package com.chanson.usercenterbackend.common;
 
 
 /**
- * 通用返回工具类
+ * 返回工具类
+ *
  * @author zhangshen
  */
 public class ResultUtils {
 
-    public static <T> BaseResponse<T> success(T data){
-        return new BaseResponse<T>(ErrorCode.SUCCESS.getCode(),data,ErrorCode.SUCCESS.getMessage(),ErrorCode.SUCCESS.getDescription());
+    /**
+     * 成功
+     *
+     * @param data
+     * @param <T>
+     * @return
+     */
+    public static <T> BaseResponse<T> success(T data) {
+        return new BaseResponse<>(0, data, "success");
     }
 
-    public static <T> BaseResponse<T> error(ErrorCode errorCode){
-        return new BaseResponse<T>(errorCode);
+    /**
+     * 失败
+     *
+     * @param errorCode
+     * @return
+     */
+    public static BaseResponse error(ErrorCode errorCode) {
+        return new BaseResponse<>(errorCode);
+    }
+
+    /**
+     * 失败
+     *
+     * @param code
+     * @param message
+     * @param description
+     * @return
+     */
+    public static BaseResponse error(int code, String message, String description) {
+        return new BaseResponse(code, null, message, description);
+    }
+
+    /**
+     * 失败
+     *
+     * @param errorCode
+     * @return
+     */
+    public static BaseResponse error(ErrorCode errorCode, String message, String description) {
+        return new BaseResponse(errorCode.getCode(), null, message, description);
+    }
+
+    /**
+     * 失败
+     *
+     * @param errorCode
+     * @return
+     */
+    public static BaseResponse error(ErrorCode errorCode, String description) {
+        return new BaseResponse(errorCode.getCode(), errorCode.getMessage(), description);
     }
 }
