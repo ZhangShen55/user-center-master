@@ -5,8 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.chanson.usercenterbackend.common.BaseResponse;
 import com.chanson.usercenterbackend.common.ErrorCode;
 import com.chanson.usercenterbackend.common.ResultUtils;
-import com.chanson.usercenterbackend.constant.UserConstant;
-import com.chanson.usercenterbackend.exception.BaseException;
+import com.chanson.usercenterbackend.exception.BusinessException;
 import com.chanson.usercenterbackend.module.domain.User;
 import com.chanson.usercenterbackend.module.domain.request.UserLoginRequest;
 import com.chanson.usercenterbackend.module.domain.request.UserRegisterRequest;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -73,7 +71,7 @@ public class UserController {
     @PostMapping("/logout")
     public BaseResponse<Integer> userLogout(HttpServletRequest request){
         if(request == null){
-            throw new BaseException(ErrorCode.PARAMS_ERROR);
+            throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         int result = userService.userLogout(request);
         return ResultUtils.success(result);
@@ -104,7 +102,7 @@ public class UserController {
         //鉴权 仅管理员可查询
         if(!isAdmin(httpServletRequest)){
             // 鉴权不通过抛出异常
-            throw new BaseException(ErrorCode.NO_AUTH,"用户无权限");
+            throw new BusinessException(ErrorCode.NO_AUTH,"用户无权限");
         }
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         if(StringUtils.isNotBlank(username)){
@@ -121,10 +119,10 @@ public class UserController {
     public  BaseResponse<Boolean> deleteUser(@RequestBody long id,HttpServletRequest httpServletRequest){
         // 鉴权仅管理员可查询
         if(!isAdmin(httpServletRequest)){
-            throw new BaseException(ErrorCode.NO_AUTH,"用户无权限");
+            throw new BusinessException(ErrorCode.NO_AUTH,"用户无权限");
         }
         if(id <= 0){
-            throw new BaseException(ErrorCode.PARAMS_ERROR,"用户不存在");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR,"用户不存在");
         }
         boolean result = userService.removeById(id);
         return ResultUtils.success(result);

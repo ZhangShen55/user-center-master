@@ -3,18 +3,29 @@
 
 declare namespace API {
   type CurrentUser = {
-    id?: number;
+    id: number;
     username: string;
     userAccount: string;
-    plantCode: string;
     avatarUrl?: string;
-    gender: number;
+    gender:number;
     phone: string;
     email: string;
     userStatus: number;
-    createTime: Date;
     userRole: number;
+    planetCode: string;
+    createTime: Date;
+
   };
+
+  /**
+   * 通用返回类
+   */
+  type BaseResponse<T> = {
+    code: number,
+    data: T,
+    message: string,
+    description: string,
+  }
 
   type LoginResult = {
     status?: string;

@@ -62,32 +62,23 @@ const Register: React.FC = () => {
     }
     try {
       // 注册
-      const id = await register({
-        ...values,
-        type,
-      });
-      if (id >  0) {
-        const defaultRegisterSuccessMessage = '注册成功！';
-        message.success(defaultRegisterSuccessMessage);
+      const id = await register(values);
+      if (id) {
+        const defaultLoginSuccessMessage = '注册成功！';
+        message.success(defaultLoginSuccessMessage);
 
-        if(!history) return;
-        const { query } = history.location;
-
+        /** 此方法会跳转到 redirect 参数所在的位置 */
+        if (!history) return;
+        const {query} = history.location;
         history.push({
-          pathname:'/user/login',
+          pathname: '/user/login',
           query,
         });
         return;
-      }else{
-        // throw new Error(`register error id = ${id}`)
-        message.error(`register error id = ${id}`)
       }
-
-    } catch (error) {
-      // 这里报错是因为 redirect 为空
-      const defaultRegisterFailureMessage = '注册失败，请重试！';
-      console.log(error);
-      message.error(defaultRegisterFailureMessage);
+    } catch (error: any) {
+      const defaultLoginFailureMessage = '注册失败，请重试！';
+      message.error(defaultLoginFailureMessage);
     }
   };
 
