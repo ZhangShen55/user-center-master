@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         boolean saveResult = this.save(user);
         //防止数据库未能生成Id -> null 拆箱失败
         if(!saveResult){
-            throw new BusinessException(ErrorCode.DB_FEILD_SAVE,"用户插入数据库失败");
+            throw new BusinessException(ErrorCode.DB_FAILED_SAVE,"用户插入数据库失败");
         }
         //返回用户id
         return user.getId();
